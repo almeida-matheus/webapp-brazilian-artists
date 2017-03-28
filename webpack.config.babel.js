@@ -1,26 +1,67 @@
 import webpack from 'webpack';
 import path from 'path';
-const built = path.resolve('./built/');
+import poststylus from 'poststylus';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+
+const builtJS = path.resolve('./built/');
 const client = path.resolve('./app/');
+const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
+	template: client + '/index.pug',
+	filename: 'index.html',
+	filetype: 'html'
+});
 
 export default {
-	entry: client + '/index.jsx',
+	entry: client + '/containers/app.container.jsx',
 	output: {
-		path: built ,
-		filename: 'bundle.min.js'
+		path: builtJS,
+		filename: 'assets/javascript/bundle.min.js'
 	},
 	module: {
 		rules: [
 			{
 				test: /(\.jsx|\.js)$/,
-				exclude: /(node_modules|bower_components)/,
+				exclude: /(node_modules)/,
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['env']
+						presets: [
+							[
+								'es2015',
+								{
+									modules: false
+								}
+							]
+						]
 					}
 				}
+			},
+			{
+				test: /\.styl$/,
+				loader: 'style-loader!css-loader!stylus-loader'
+			},
+			{
+				test: /(\.pug)$/,
+				loaders: [
+					'html-loader',
+					'pug-html-loader?exports=false'
+				]
 			}
 		]
-	}
+	},
+	plugins: [
+		new webpack.LoaderOptionsPlugin({
+			options: {
+				stylus: {
+					use: [
+						poststylus([
+							'autoprefixer',
+							'rucksack-css'
+						])
+					]
+				}
+			}
+		}),
+		HTMLWebpackPluginConfig
+	]
 };

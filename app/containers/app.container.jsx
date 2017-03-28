@@ -1,3 +1,5 @@
+import test from './test.styl';
+
 class Account {
     constructor() {
         this.transactions = [];
