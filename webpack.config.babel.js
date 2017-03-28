@@ -2,8 +2,9 @@ import webpack from 'webpack';
 import path from 'path';
 import poststylus from 'poststylus';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-const builtJS = path.resolve('./built/');
+const built = path.resolve('./built/');
 const client = path.resolve('./app/');
 const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 	template: client + '/index.pug',
@@ -14,7 +15,7 @@ const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 export default {
 	entry: client + '/containers/app.container.jsx',
 	output: {
-		path: builtJS,
+		path: built,
 		filename: 'assets/javascript/bundle.min.js'
 	},
 	module: {
@@ -36,6 +37,16 @@ export default {
 					}
 				}
 			},
+            {
+				include: path.join(__dirname, '/config/manifest.json'),
+				test: /(\.json)$/,
+                use: {
+					loader: 'file-loader',
+					options: {
+						name: 'config/[name].[ext]'
+					}
+                }
+            },
 			{
 				test: /\.styl$/,
 				loader: 'style-loader!css-loader!stylus-loader'
@@ -62,6 +73,7 @@ export default {
 				}
 			}
 		}),
+		new CopyWebpackPlugin([ { from: './app/config/manifest.json', to: './config' } ]),
 		HTMLWebpackPluginConfig
 	]
 };
