@@ -7,19 +7,29 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 const built = path.resolve('./built/');
 const client = path.resolve('./app/');
 const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
-	template: client + '/index.pug',
+	template: `${client}/index.pug`,
 	filename: 'index.html',
 	filetype: 'html'
 });
 
 export default {
-	entry: client + '/containers/app.container.jsx',
+	entry: `${client}/index.jsx`,
+	devtool: 'eval-source-map',
 	output: {
 		path: built,
 		filename: 'assets/javascript/bundle.min.js'
 	},
 	module: {
 		rules: [
+			{
+				test: /(\.jsx|\.js)$/,
+				enforce: 'pre',
+				use: [
+					{
+						loader: 'eslint-loader'
+					}
+				]
+			},
 			{
 				test: /(\.jsx|\.js)$/,
 				exclude: /(node_modules)/,
@@ -37,19 +47,29 @@ export default {
 					}
 				}
 			},
-            {
+			{
 				include: path.join(__dirname, '/config/manifest.json'),
 				test: /(\.json)$/,
-                use: {
+				use: {
 					loader: 'file-loader',
 					options: {
 						name: 'config/[name].[ext]'
 					}
-                }
-            },
+				}
+			},
 			{
 				test: /\.styl$/,
-				loader: 'style-loader!css-loader!stylus-loader'
+				use: [
+					{
+						loader: 'style-loader'
+					},
+					{
+						loader: 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!autoprefixer-loader?{browsers:["last 2 version", "Firefox 15"]}'
+					},
+					{
+						loader: 'stylus-loader'
+					}
+				]
 			},
 			{
 				test: /(\.pug)$/,
@@ -60,20 +80,37 @@ export default {
 			}
 		]
 	},
+	resolve: {
+		extensions: [
+			'.js',
+			'.jsx',
+			'.html',
+			'.pug',
+			'.css',
+			'.styl'
+		]
+	},
 	plugins: [
-		new webpack.LoaderOptionsPlugin({
+
+
+/*		new webpack.LoaderOptionsPlugin({
 			options: {
 				stylus: {
 					use: [
 						poststylus([
-							'autoprefixer',
-							'rucksack-css'
+							'postcss-reporter',
+							'autoprefixer'
 						])
 					]
 				}
 			}
-		}),
-		new CopyWebpackPlugin([ { from: './app/config/manifest.json', to: './config' } ]),
+		}),*/
+		new CopyWebpackPlugin([
+			{
+				from: './app/config/manifest.json',
+				to: './config'
+			}
+		]),
 		HTMLWebpackPluginConfig
 	]
 };
