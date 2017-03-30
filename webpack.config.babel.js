@@ -90,7 +90,7 @@ export default {
 			},
 			{
 				from: './app/service-worker.js',
-				to: './assets/javascript'
+				to: './'
 			}
 		]),
 		HTMLWebpackPluginConfig

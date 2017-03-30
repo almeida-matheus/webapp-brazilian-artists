@@ -10,13 +10,14 @@ import globalStyl from './styles/global.styl';
 import variablesStyl from './styles/variables.styl';
 
 if ('serviceWorker' in navigator) {
-	console.log('have serviceWorker');
 	navigator.serviceWorker
-		.register('assets/javascript/service-worker.js')
-			.then((model) => {
-				console.log('Service Worker Registered');
-				console.log(model);
-			});
+		.register('/service-worker.js', { scope: './' })
+		.then(() => {
+			console.log('Service worker registered!');
+		})
+		.catch(() => {
+			console.log('There was an error!');
+		});
 }
 
 const store = configureStore();

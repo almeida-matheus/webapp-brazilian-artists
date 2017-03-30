@@ -1,53 +1,44 @@
-const PRECACHE = 'brazilianArtists-v1';
-const RUNTIME = 'runtime';
-
-const PRECACHE_URLS = [
-	'/',
-	'/index.html',
-	'/assets/javascript/bundle.min.js'
+var DATA_CACHE_NAME = 'brazilian-artists-cache-v1';
+var URLS_TO_CACHE = [
+	'index.html'
 ];
 
-
-self.addEventListener('install', event => {
-	console.log('install sw');
+self.addEventListener('install', (event) => {
 	event.waitUntil(
-		caches.open(PRECACHE)
-			.then(cache => cache.addAll(PRECACHE_URLS))
-			.then(self.skipWaiting())
-	);
-});
-
-self.addEventListener('activate', event => {
-	console.log('activate sw');
-	const currentCaches = [PRECACHE, RUNTIME];
-	event.waitUntil(
-		caches.keys().then(cacheNames => {
-			return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
-		}).then(cachesToDelete => {
-			return Promise.all(cachesToDelete.map(cacheToDelete => {
-				return caches.delete(cacheToDelete);
-			}));
-		}).then(() => self.clients.claim())
-	);
-});
-
-self.addEventListener('fetch', event => {
-	console.log('fetch sw');
-	if (event.request.url.startsWith(self.location.origin)) {
-		event.respondWith(
-			caches.match(event.request).then(cachedResponse => {
-				if (cachedResponse) {
-					return cachedResponse;
-				}
-
-				return caches.open(RUNTIME).then(cache => {
-					return fetch(event.request).then(response => {
-						return cache.put(event.request, response.clone()).then(() => {
-							return response;
-						});
-					});
-				});
+		caches.open(DATA_CACHE_NAME)
+			.then(function (cache) {
+				return cache.addAll(URLS_TO_CACHE);
 			})
-		);
-	}
+	);
+});
+
+self.addEventListener('fetch', function dataCacheName(event) {
+	event.respondWith(
+		caches.open(DATA_CACHE_NAME)
+			.then(function (cache) {
+				return cache.match(event.request)
+					.then(function (response) {
+						return response || fetch(event.request)
+							.then(function (response) {
+								cache.put(event.request, response.clone());
+								return response;
+							});
+					});
+			})
+	);
+});
+
+self.addEventListener('activate', function (event) {
+	event.waitUntil(
+		caches.keys().then(function(keys) {
+			return Promise.all(keys
+				.filter(function(key) {
+					return key.indexOf(DATA_CACHE_NAME) !== 0;
+				})
+				.map(function(key) {
+					return caches.delete(key);
+				})
+			);
+		})
+	);
 });
