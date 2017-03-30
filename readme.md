@@ -6,6 +6,7 @@ Install the devDependencies and start the server.
 $ npm install
 $ node run start
 ```
-![alt tag](https://raw.githubusercontent.com/almeida-matheus/webapp-reactjs-brazilian-artists/master/img.png)
+<img src="https://raw.githubusercontent.com/almeida-matheus/webapp-reactjs-brazilian-artists/master/img.png" width="300" height="500">
+
 
 [Simple demo](https://webapp-brazilian-artists.surge.sh/)
