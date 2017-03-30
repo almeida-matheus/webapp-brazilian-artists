@@ -4,7 +4,7 @@
   "description": "Weapp app using reactJS",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --https",
+    "start": "webpack-dev-server --https --hot",
     "external": "webpack-dev-server --port 3000 --inline --hot --https --host 0.0.0.0",
     "build": "webpack"
   },
