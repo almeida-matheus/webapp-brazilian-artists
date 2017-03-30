@@ -9,7 +9,9 @@ class SectionComponent extends Component {
 	render () {
 		return (
 			<section className={`${style.section}`}>
-				<span>Salllllllllveee</span>
+				{
+					this.props.children
+				}
 			</section>
 		);
 	}

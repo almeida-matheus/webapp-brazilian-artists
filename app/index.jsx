@@ -9,6 +9,15 @@ import globalStyl from './styles/global.styl';
 // eslint-disable-next-line
 import variablesStyl from './styles/variables.styl';
 
+if ('serviceWorker' in navigator) {
+	console.log('have serviceWorker');
+	navigator.serviceWorker
+		.register('assets/javascript/service-worker.js')
+			.then((model) => {
+				console.log('Service Worker Registered');
+				console.log(model);
+			});
+}
 
 const store = configureStore();
 

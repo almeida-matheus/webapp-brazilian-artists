@@ -1,6 +1,4 @@
-import webpack from 'webpack';
 import path from 'path';
-import poststylus from 'poststylus';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
@@ -48,16 +46,6 @@ export default {
 				}
 			},
 			{
-				include: path.join(__dirname, '/config/manifest.json'),
-				test: /(\.json)$/,
-				use: {
-					loader: 'file-loader',
-					options: {
-						name: 'config/[name].[ext]'
-					}
-				}
-			},
-			{
 				test: /\.styl$/,
 				use: [
 					{
@@ -91,24 +79,18 @@ export default {
 		]
 	},
 	plugins: [
-
-
-/*		new webpack.LoaderOptionsPlugin({
-			options: {
-				stylus: {
-					use: [
-						poststylus([
-							'postcss-reporter',
-							'autoprefixer'
-						])
-					]
-				}
-			}
-		}),*/
 		new CopyWebpackPlugin([
 			{
-				from: './app/config/manifest.json',
+				from: './app/config',
 				to: './config'
+			},
+			{
+				from: './app/assets/images',
+				to: './assets/images'
+			},
+			{
+				from: './app/service-worker.js',
+				to: './assets/javascript'
 			}
 		]),
 		HTMLWebpackPluginConfig

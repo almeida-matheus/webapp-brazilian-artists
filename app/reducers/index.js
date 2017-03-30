@@ -1,10 +1,10 @@
 import {
 	combineReducers,
 } from 'redux';
-import Tst from './tst';
+import artists from './artists';
 
 const rootReducer = combineReducers({
-	Tst
+	artists
 });
 
 export default rootReducer;
