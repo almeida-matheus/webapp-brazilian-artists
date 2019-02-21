@@ -1,6 +1,6 @@
 # Progressive Web App with React.js 
 
-Install the devDependencies and start the server.
+Install dependencies and start the server.
 
 ```sh
 $ npm install
